@@ -17,11 +17,13 @@ function circlePos(k) {
 }
 
 function interval(callback) {
+    let start = performance.now();
     const proc = t => {
-        callback(t);
+        callback(t - start);
+        start = t;
         window.requestAnimationFrame(proc);
     };
-    proc(0);
+    proc(start);
 }
 
 function ready() {
@@ -32,19 +34,23 @@ function ready() {
         return false;
     };
     document.onkeydown = e => {
-        if(!keyState[e.keyCode]) {
-            const p = circlePos(e.keyCode);
-            ripple.push({x: p.x, y: p.y, z: 0});
+        if(e.keyCode >= 'A'.charCodeAt(0) && e.keyCode <= 'Z'.charCodeAt(0)) {
+            if(!keyState[e.keyCode]) {
+                const p = circlePos(e.keyCode);
+                ripple.push({x: p.x, y: p.y, z: 0});
+            }
+            keyState[e.keyCode] = true;
+            return false;
         }
-        keyState[e.keyCode] = true;
-        return false;
     };
     document.onkeyup = e => {
-        keyState[e.keyCode] = false;
+        if(e.keyCode >= 'A'.charCodeAt(0) && e.keyCode <= 'Z'.charCodeAt(0)) {
+            keyState[e.keyCode] = false;
+        }
         return false;
     };
 
-    interval(t => {
+    interval(d => {
         ctx.clearRect(0, 0, 400, 400);
         
         ripple = ripple.filter(function(e) {
@@ -52,7 +58,7 @@ function ready() {
             ctx.beginPath();
             ctx.arc(e.x, e.y, e.z, 0, Math.PI * 2, false);
             ctx.stroke();
-            e.z += 2.5;
+            e.z += d * 0.1;
             return e.z < 200.0;
         });
         
@@ -70,6 +76,6 @@ function ready() {
             }
             ctx.fillText(String.fromCharCode('A'.charCodeAt(0) + i), x, y);
         }
-        time += 1.0;
+        time += d;
     });
 }
