@@ -1,9 +1,3 @@
-let canvas,
-    ctx,
-    time = 0.0,
-    keyState = [],
-    ripple = [];
-
 function rgba(r, g, b, a) {
     return `rgba(${r},${g},${b},${a})`;
 }
@@ -27,8 +21,12 @@ function interval(callback) {
 }
 
 function ready() {
-    canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
+    let time = 0,
+        canvas = document.getElementById('canvas'),
+        ctx = canvas.getContext('2d')
+        keyState = [],
+        ripple = [];
+    
     ctx.font = '16pt Consolas';
     document.onkeypress = e => {
         return false;
